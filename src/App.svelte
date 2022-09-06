@@ -1,5 +1,5 @@
-<script>
-    import Navbar from "./lib/navbar/Navbar.svelte";
+<script lang="ts">
+    import MainLayout from "./lib/layout/MainLayout.svelte";
 </script>
 
-<Navbar />
+<MainLayout showSidebar={true} />
