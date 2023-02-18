@@ -1,9 +1,11 @@
 <script lang="ts">
     import Fa from "svelte-fa";
+
     import {faBars} from "@fortawesome/free-solid-svg-icons/faBars";
     import {faClose} from "@fortawesome/free-solid-svg-icons/faClose";
     import {faHome} from "@fortawesome/free-solid-svg-icons/faHome";
     import {link} from "svelte-routing";
+    import {faRightFromBracket} from "@fortawesome/free-solid-svg-icons/faRightFromBracket";
 
     export let show = true;
 
@@ -15,6 +17,10 @@
         routeLink: "dashboard",
         icon: faHome,
         label: 'Dashboard'
+    }, {
+        routeLink: "logout",
+        icon: faRightFromBracket,
+        label: 'Logout'
     }];
 
 </script>
@@ -119,10 +125,12 @@
       .sidenav-item-wrapper {
         border-radius: 0.75rem;
         width: 100%;
+        min-width: 48px;
         height: 48px;
         text-align: center;
         transition: color .3s ease, background-color .3s ease;
         cursor: pointer;
+        margin: .5rem 0;
 
         &:hover, &.active {
           background-color: $sidebar-item-hover-background;
@@ -136,7 +144,7 @@
           display: flex;
           flex-direction: row;
           padding-top: 0.8rem;
-          justify-content: center;
+          padding-left: 13px;
         }
 
         .sidenav-item-link {
@@ -156,7 +164,7 @@
           max-width .3s ease,
           padding-left .3s ease,
           opacity .3s ease;
-          line-height: 28px;
+          line-height: 22px;
 
           &.sidenav-collapsed {
             overflow: hidden;
