@@ -5,7 +5,7 @@
 <main class="main-wrapper">
     <Sidebar show={true}></Sidebar>
     <div class="content-wrapper">
-        <slot name="main-content"></slot>
+        <slot />
     </div>
 </main>
 

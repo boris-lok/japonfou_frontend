@@ -3,6 +3,8 @@
     import Login from "./pages/Login.svelte";
     import PrivateRoute from "./components/PrivateRoute.svelte";
     import {user} from "./stores/user";
+    import AdminLayout from "./lib/layout/AdminLayout.svelte";
+    import Dashboard from "./lib/Dashboard.svelte";
 
     user.useLocalStorage();
 </script>
@@ -13,6 +15,8 @@
     </Route>
 
     <PrivateRoute let:location path="dashboard">
-        <h3>Welcome {$user}</h3>
+        <AdminLayout>
+            <Dashboard />
+        </AdminLayout>
     </PrivateRoute>
 </Router>

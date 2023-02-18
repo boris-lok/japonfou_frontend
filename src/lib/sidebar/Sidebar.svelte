@@ -3,7 +3,7 @@
     import {faBars} from "@fortawesome/free-solid-svg-icons/faBars";
     import {faClose} from "@fortawesome/free-solid-svg-icons/faClose";
     import {faHome} from "@fortawesome/free-solid-svg-icons/faHome";
-    import {link, Router} from "svelte-routing";
+    import {link} from "svelte-routing";
 
     export let show = true;
 
@@ -28,13 +28,13 @@
                 <div class="menu-icon"
                      on:click={toggleCollapsed}>
                     <Fa icon={faBars}
-                        size="1.5x"></Fa>
+                        size="1.2x"></Fa>
                 </div>
             {:else}
                 <div class="menu-icon"
                      on:click={toggleCollapsed}>
                     <Fa icon={faClose}
-                        size="1.5x"></Fa>
+                        size="1.2x"></Fa>
                 </div>
             {/if}
         </div>
@@ -48,8 +48,7 @@
                         <div class="sidenav-item">
                             <div class="sidenav-item-icon">
                                 <Fa icon="{l.icon}"
-                                    size="{collapsed ? '1.5x' : ''}"
-
+                                    size="1.2x"
                                 />
                             </div>
                             <div class="sidenav-item-label"
@@ -75,7 +74,7 @@
     color: $sidebar-font;
     padding: 2.5rem 1rem;
     position: relative;
-    transition: width 0.5s ease;
+    transition: width 0.3s;
     z-index: 1;
 
     &.sidenav-collapsed {
