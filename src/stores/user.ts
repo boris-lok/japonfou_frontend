@@ -15,6 +15,10 @@ const createWritableStore = (key: string, initial_value: any) => {
             subscribe(current => {
                 localStorage.setItem(key, current)
             });
+        },
+        remove: () => {
+            user.set(null);
+            localStorage.removeItem(key)
         }
     }
 }

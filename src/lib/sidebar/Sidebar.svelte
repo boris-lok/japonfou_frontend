@@ -49,8 +49,7 @@
             {#each links as l}
                 <li class="sidenav-item-wrapper">
                     <a href={l.routeLink}
-                       class="sidenav-item-link"
-                       use:link>
+                       class="sidenav-item-link">
                         <div class="sidenav-item">
                             <div class="sidenav-item-icon">
                                 <Fa icon="{l.icon}"
@@ -164,7 +163,7 @@
           max-width .3s ease,
           padding-left .3s ease,
           opacity .3s ease;
-          line-height: 22px;
+          line-height: 23px;
 
           &.sidenav-collapsed {
             overflow: hidden;
