@@ -2,6 +2,7 @@
 
     import {onMount} from "svelte";
     import InfiniteScroll from "../components/InfiniteScroll.svelte";
+    import Loading from "../components/Loading.svelte";
 
     interface Customer {
         id: number,
@@ -14,10 +15,14 @@
     let loading: boolean = false;
     let hasMore: boolean = true;
 
+    function delay(ms: number) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
     let i = 0;
     const fetch_data = async () => {
-        console.log('fetch data');
         loading = true;
+        await delay(3000);
         let new_customers = Array.from(Array(page_size).keys()).map(x => {
             return {
                 id: x + i,
@@ -42,7 +47,7 @@
 
 <div class="customer-list-wrapper">
     {#if loading}
-        <div> loading ...</div>
+        <Loading/>
     {/if}
     {#each customers as customer (customer.id)}
         <div class="customer-wrapper">
