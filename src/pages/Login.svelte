@@ -8,10 +8,17 @@
     let username: string = "";
     let password: string = "";
 
+    const DASHBOARD = "/dashboard"
+
+    // If user has already logged in, we bring user to dashboard page.
+    $: if ($user) {
+        navigate(DASHBOARD, {replace: true});
+    }
+
     const handle_login = () => {
         // TODO: call api to login
         user.set(username);
-        const from = ($location.state && $location.state.from) || "/";
+        const from = ($location.state && $location.state.from) || DASHBOARD;
         navigate(from, {replace: true});
     }
 </script>
