@@ -4,7 +4,6 @@
     import {faBars} from "@fortawesome/free-solid-svg-icons/faBars";
     import {faClose} from "@fortawesome/free-solid-svg-icons/faClose";
     import {faHome} from "@fortawesome/free-solid-svg-icons/faHome";
-    import {link} from "svelte-routing";
     import {faRightFromBracket} from "@fortawesome/free-solid-svg-icons/faRightFromBracket";
 
     export let show = true;
@@ -14,11 +13,11 @@
     const toggleCollapsed = () => collapsed = !collapsed;
 
     let links = [{
-        routeLink: "dashboard",
+        routeLink: "/dashboard",
         icon: faHome,
         label: 'Dashboard'
     }, {
-        routeLink: "logout",
+        routeLink: "/logout",
         icon: faRightFromBracket,
         label: 'Logout'
     }];
