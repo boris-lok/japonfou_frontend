@@ -68,7 +68,7 @@
 {/if}
 
 <style lang="scss">
-  @import "src/assets/constants";
+  @import "../../assets/constants";
 
   .sidenav {
     display: flex;

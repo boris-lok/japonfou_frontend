@@ -3,8 +3,8 @@
     import Login from "./pages/Login.svelte";
     import PrivateRoute from "./components/PrivateRoute.svelte";
     import {user} from "./stores/user";
-    import AdminLayout from "./lib/layout/AdminLayout.svelte";
-    import Dashboard from "./lib/Dashboard.svelte";
+    import AdminLayout from "./components/layout/AdminLayout.svelte";
+    import Dashboard from "./pages/Dashboard.svelte";
     import Logout from "./pages/Logout.svelte";
 
     user.useLocalStorage();
