@@ -1,12 +1,14 @@
 <script lang="ts">
     import {useLocation, useNavigate} from "svelte-navigator";
     import {user} from "../stores/user";
+    import {Users} from "../lib/services";
 
     const navigate = useNavigate();
     const location = useLocation();
 
     let username: string = "";
     let password: string = "";
+    let error_msg: string = "";
 
     const DASHBOARD = "/dashboard"
 
@@ -15,30 +17,35 @@
         navigate(DASHBOARD, {replace: true});
     }
 
-    const handle_login = () => {
-        // TODO: call api to login
-        user.set(username);
-        const from = ($location.state && $location.state.from) || DASHBOARD;
-        navigate(from, {replace: true});
+    const handle_login = async () => {
+        try {
+            let res = await Users.login(username, password);
+            user.set({
+                username: username,
+                token: res.token
+            });
+            const from = ($location.state && $location.state.from) || DASHBOARD;
+            navigate(from, {replace: true});
+        } catch (e) {
+            error_msg = "Login Failed";
+        }
     }
 </script>
 
 <div class="login-wrapper">
     <div class="login-container">
         <div class="label">Login</div>
-        <form on:submit={handle_login}>
-            <div class="input-container">
-                <input bind:value={username} name="username" placeholder=" " required type="text">
-                <span>Username</span>
-            </div>
-            <div class="input-container">
-                <input bind:value={password} class="input" name="password" placeholder=" " required type="password">
-                <span>Password</span>
-            </div>
-            <div class="btn-container">
-                <button type="submit">Login</button>
-            </div>
-        </form>
+        <div class="input-container">
+            <input bind:value={username} name="username" placeholder=" " required type="text">
+            <span>Username</span>
+        </div>
+        <div class="input-container">
+            <input bind:value={password} class="input" name="password" placeholder=" " required type="password">
+            <span>Password</span>
+        </div>
+        <div class="btn-container">
+            <button on:click={handle_login} type="submit">Login</button>
+        </div>
     </div>
 </div>
 
@@ -58,8 +65,8 @@
   }
 
   .login-container {
-    width: 80%;
-    max-width: 20rem;
+    width: 90%;
+    max-width: 24rem;
     height: 20rem;
 
     display: flex;
@@ -71,6 +78,8 @@
     box-shadow: 0 0 24px 0 $grey-shadow;
 
     border-radius: .5rem;
+
+    padding: 0 .75rem;
 
     > .label {
       font-size: 1.25em;

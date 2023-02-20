@@ -22,17 +22,7 @@
     let i = 0;
     const fetch_data = async () => {
         loading = true;
-        await delay(3000);
-        let new_customers = Array.from(Array(page_size).keys()).map(x => {
-            return {
-                id: x + i,
-                name: "boris"
-            } as Customer
-        });
         loading = false;
-        i = (page + 1) * page_size + 1;
-        hasMore = true;
-        customers = [...customers, ...new_customers];
     }
 
     const reset = () => {
