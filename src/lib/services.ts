@@ -1,5 +1,5 @@
 import axios from "axios";
-import type {ICustomer, IFilterCustomerListRequest, ILoginResponse} from "./model";
+import type {ICreateCustomerRequest, ICustomer, IFilterCustomerListRequest, ILoginResponse} from "./model";
 import {user} from "../stores/user";
 
 
@@ -21,6 +21,25 @@ const encode_keyword = (keyword: string): string => {
 }
 
 const response_body = (response) => response.data;
+
+let auth_axios = (function () {
+    let client = null;
+    return function () {
+        if (client === null) {
+            client = axios.create({
+                baseURL: BASE_URL,
+                timeout: TIMEOUT,
+                headers: {
+                    "Access-Control-Allow-Origin": "*",
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token()}`
+                }
+            });
+        }
+        return client
+    }
+})();
+
 
 export const Users = {
     login: (username: string, password: string): Promise<ILoginResponse> => {
@@ -54,18 +73,17 @@ export const Customers = {
             ...(k !== null) && {keyword: k},
         }
 
-        return axios.create({
-            baseURL: BASE_URL,
-            timeout: TIMEOUT,
-            headers: {
-                "Access-Control-Allow-Origin": "*",
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token()}`
-            }
-        }).get("/v1/admin/customers", {
-            params: data
-        })
+        return auth_axios()
+            .get("/v1/admin/customers", {
+                params: data
+            })
             .then(response_body)
 
+    },
+    create_customer: (new_customer: ICreateCustomerRequest): Promise<any> => {
+        let data = JSON.stringify(new_customer);
+        return auth_axios()
+            .post("/v1/admin/customers", data)
+            .then(response_body);
     }
 }

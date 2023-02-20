@@ -16,6 +16,13 @@ export interface IFilterCustomerListRequest {
     phone?: string,
 }
 
+export interface ICreateCustomerRequest {
+    name: string,
+    email?: string,
+    phone?: string,
+    remark?: string
+}
+
 
 export interface ILoginResponse {
     token: string,
