@@ -3,6 +3,8 @@
     import {user} from "../stores/user";
     import {Users} from "../lib/services";
     import type {AxiosError} from "axios";
+    import InputBox from "../components/InputBox.svelte";
+    import {EInputBox} from "../lib/model.js";
 
     const navigate = useNavigate();
     const location = useLocation();
@@ -18,16 +20,35 @@
         navigate(DASHBOARD, {replace: true});
     }
 
+    const validate = (): boolean => {
+        return username.trim() !== "" && password.trim() !== "";
+    }
+
+    const on_username_changed = (e: any) => username = e.target.value;
+
+    const on_password_changed = (e: any) => password = e.target.value;
+
+    const on_key_press = async e => {
+        let key_code = e.code || e.key;
+        if (key_code === "Enter") {
+            await handle_login();
+        }
+    }
+
     const handle_login = async () => {
         error_msg = null;
         try {
-            let res = await Users.login(username, password);
-            user.set(JSON.stringify({
-                username: username,
-                token: res.token
-            }));
-            const from = ($location.state && $location.state.from) || DASHBOARD;
-            navigate(from, {replace: true});
+            if (validate()) {
+                let res = await Users.login(username, password);
+                user.set(JSON.stringify({
+                    username: username,
+                    token: res.token
+                }));
+                const from = ($location.state && $location.state.from) || DASHBOARD;
+                navigate(from, {replace: true});
+            } else {
+                error_msg = "Please fill the username and password";
+            }
         } catch (e: AxiosError) {
             if (e.response && e.response.status === 401) {
                 error_msg = "Username or password is wrong"
@@ -44,16 +65,10 @@
         {#if error_msg !== null}
             <div class="error">{ error_msg }</div>
         {/if}
-        <div class="input-container">
-            <input bind:value={username} class:error={error_msg !== null} name="username" placeholder=" " required
-                   type="text">
-            <span>Username</span>
-        </div>
-        <div class="input-container">
-            <input bind:value={password} class="input" class:error={error_msg !== null} name="password" placeholder=" "
-                   required type="password">
-            <span>Password</span>
-        </div>
+        <InputBox has_error={error_msg !== null} label="Username" name="username"
+                  on:input={on_username_changed} on:keypress={on_key_press} type={EInputBox.text}/>
+        <InputBox has_error={error_msg !== null} label="Password" name="password" on:input={on_password_changed}
+                  on:keypress={on_key_press} type={EInputBox.password}/>
         <div class="btn-container">
             <button on:click={handle_login} type="submit">Login</button>
         </div>
@@ -103,48 +118,6 @@
     > form {
       width: 100%;
       padding: 1rem 0.75rem;
-    }
-  }
-
-  .input-container {
-    position: relative;
-    width: 100%;
-
-    margin: 1em 0;
-
-    > input {
-      width: 100%;
-      border: 1px solid $black;
-      padding: 10px;
-      border-radius: 5px;
-      outline: none;
-      font-size: 1em;
-    }
-
-    > span {
-      position: absolute;
-      left: 0;
-      padding: 10px;
-      pointer-events: none;
-      font-size: 1em;
-      text-transform: uppercase;
-      transition: 0.3s;
-    }
-
-    > input:focus ~ span, input:not(:placeholder-shown) ~ span {
-      color: $deep-blue;
-      transform: translateX(10px) translateY(-10px);
-      font-size: 0.65em;
-      padding: 0 10px;
-      background-color: rgb(255, 255, 255);
-    }
-
-    > input:focus {
-      border: 1px solid $deep-blue;
-    }
-
-    > input.error {
-      border: 1px solid $error;
     }
   }
 

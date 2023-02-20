@@ -27,3 +27,8 @@ export interface ICreateCustomerRequest {
 export interface ILoginResponse {
     token: string,
 }
+
+export enum EInputBox {
+    text = "text",
+    password = "password",
+}
