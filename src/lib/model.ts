@@ -9,6 +9,13 @@ export interface ICustomer {
     deleted_at?: Date,
 }
 
+export interface IFilterCustomerListRequest {
+    id?: number,
+    name?: string,
+    email?: string,
+    phone?: string,
+}
+
 
 export interface ILoginResponse {
     token: string,

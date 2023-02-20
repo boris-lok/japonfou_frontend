@@ -3,6 +3,7 @@
     import {onMount} from "svelte";
     import InfiniteScroll from "../components/InfiniteScroll.svelte";
     import Loading from "../components/Loading.svelte";
+    import {Customers} from "../lib/services";
 
     interface Customer {
         id: number,
@@ -22,6 +23,8 @@
     let i = 0;
     const fetch_data = async () => {
         loading = true;
+        let new_customers = await Customers.get_customers({name: "yee"}, 1, 1);
+        console.log(`${new_customers}`);
         loading = false;
     }
 
