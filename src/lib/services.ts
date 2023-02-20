@@ -7,7 +7,7 @@ const TIMEOUT: number = 5000;
 const response_body = (response) => response.data;
 
 export const Users = {
-    login: async (username: string, password: string): Promise<ILoginResponse> => {
+    login: (username: string, password: string): Promise<ILoginResponse> => {
         let data = JSON.stringify({
             "username": username,
             "password": password

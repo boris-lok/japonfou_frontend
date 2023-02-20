@@ -2,13 +2,14 @@
     import {useLocation, useNavigate} from "svelte-navigator";
     import {user} from "../stores/user";
     import {Users} from "../lib/services";
+    import type {AxiosError} from "axios";
 
     const navigate = useNavigate();
     const location = useLocation();
 
     let username: string = "";
     let password: string = "";
-    let error_msg: string = "";
+    let error_msg: string | null = null;
 
     const DASHBOARD = "/dashboard"
 
@@ -18,16 +19,21 @@
     }
 
     const handle_login = async () => {
+        error_msg = null;
         try {
             let res = await Users.login(username, password);
-            user.set({
+            user.set(JSON.stringify({
                 username: username,
                 token: res.token
-            });
+            }));
             const from = ($location.state && $location.state.from) || DASHBOARD;
             navigate(from, {replace: true});
-        } catch (e) {
-            error_msg = "Login Failed";
+        } catch (e: AxiosError) {
+            if (e.response && e.response.status === 401) {
+                error_msg = "Username or password is wrong"
+            } else {
+                error_msg = "Server unavailable"
+            }
         }
     }
 </script>
@@ -35,12 +41,17 @@
 <div class="login-wrapper">
     <div class="login-container">
         <div class="label">Login</div>
+        {#if error_msg !== null}
+            <div class="error">{ error_msg }</div>
+        {/if}
         <div class="input-container">
-            <input bind:value={username} name="username" placeholder=" " required type="text">
+            <input bind:value={username} class:error={error_msg !== null} name="username" placeholder=" " required
+                   type="text">
             <span>Username</span>
         </div>
         <div class="input-container">
-            <input bind:value={password} class="input" name="password" placeholder=" " required type="password">
+            <input bind:value={password} class="input" class:error={error_msg !== null} name="password" placeholder=" "
+                   required type="password">
             <span>Password</span>
         </div>
         <div class="btn-container">
@@ -131,6 +142,10 @@
     > input:focus {
       border: 1px solid $deep-blue;
     }
+
+    > input.error {
+      border: 1px solid $error;
+    }
   }
 
   .btn-container {
@@ -148,5 +163,11 @@
       border-radius: 5px;
       background-color: $light-blue;
     }
+  }
+
+  div.error {
+    font-size: 1em;
+    font-weight: 500;
+    color: $error;
   }
 </style>

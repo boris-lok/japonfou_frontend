@@ -1,4 +1,4 @@
-import {writable} from "svelte/store";
+import {get, writable} from "svelte/store";
 
 const createWritableStore = (key: string, initial_value: any) => {
     const {subscribe, set} = writable(initial_value);
@@ -9,7 +9,7 @@ const createWritableStore = (key: string, initial_value: any) => {
         useLocalStorage: () => {
             const json = localStorage.getItem(key);
             if (json && json !== "null") {
-                set(json)
+                set(json);
             }
 
             subscribe(current => {
@@ -19,6 +19,9 @@ const createWritableStore = (key: string, initial_value: any) => {
         remove: () => {
             user.set(null);
             localStorage.removeItem(key)
+        },
+        get: () => {
+            return get(user);
         }
     }
 }
