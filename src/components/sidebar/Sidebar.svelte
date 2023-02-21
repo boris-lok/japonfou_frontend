@@ -1,10 +1,9 @@
 <script lang="ts">
-    import Fa from "svelte-fa";
-
     import {faBars} from "@fortawesome/free-solid-svg-icons/faBars";
     import {faClose} from "@fortawesome/free-solid-svg-icons/faClose";
     import {faHome} from "@fortawesome/free-solid-svg-icons/faHome";
     import {faRightFromBracket} from "@fortawesome/free-solid-svg-icons/faRightFromBracket";
+    import Fa from "svelte-fa";
 
     export let show = true;
 
@@ -80,6 +79,7 @@
     position: relative;
     transition: width 0.3s;
     z-index: 1;
+    overflow-y: scroll;
 
     &.sidenav-collapsed {
       width: 16.5625rem;

@@ -7,6 +7,7 @@
     import Dashboard from "./pages/Dashboard.svelte";
     import Logout from "./pages/Logout.svelte";
     import CustomerList from "./pages/CustomerList.svelte";
+    import CustomerEditor from "./pages/CustomerEditor.svelte";
 
     user.useLocalStorage();
 </script>
@@ -29,6 +30,12 @@
     <PrivateRoute let:location path="customer/list">
         <AdminLayout>
             <CustomerList/>
+        </AdminLayout>
+    </PrivateRoute>
+
+    <PrivateRoute let:location path="customer/create">
+        <AdminLayout>
+            <CustomerEditor/>
         </AdminLayout>
     </PrivateRoute>
 </Router>

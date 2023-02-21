@@ -5,19 +5,30 @@
     export let has_error: boolean = false;
     export let name: string = "";
     export let type: EInputBox = EInputBox.text;
-
     export let label: string = "";
+
+    export let hint: string | null = null;
+
+    export const reset = () => ref.value = '';
+
+    let ref;
 
     const type_action = (node: HTMLInputElement) => {
         node.type = type;
     }
 </script>
 
-<div class="input-box-container">
-    <input class:error={has_error} name={name} on:input on:keypress placeholder=" " type="text" use:type_action
-           value={value}/>
-    <span>{label}</span>
-</div>
+<main>
+    <div class="input-box-container">
+        <input bind:this={ref} class:error={has_error} name={name} on:blur on:input on:keypress placeholder=" "
+               type="text"
+               use:type_action value={value}/>
+        <span>{label}</span>
+        {#if hint !== null}
+            <div class="hint">{hint}</div>
+        {/if}
+    </div>
+</main>
 
 <style lang="scss">
   @import "src/assets/constants";
@@ -25,12 +36,12 @@
   .input-box-container {
     position: relative;
     width: 100%;
-    margin: 1em 0;
+    margin: 2em 0;
 
     > input {
       width: 100%;
       border: 1px solid $black;
-      padding: 10px;
+      padding: 10px 16px;
       border-radius: 5px;
       outline: none;
       font-size: 1em;
@@ -48,10 +59,11 @@
 
     > input:focus ~ span, input:not(:placeholder-shown) ~ span {
       color: $deep-blue;
-      transform: translateX(10px) translateY(-10px);
+      transform: translateX(10px) translateY(-12px);
       font-size: 0.65em;
-      padding: 0 10px;
-      background-color: rgb(255, 255, 255);
+      padding: 0 16px;
+      background-color: $pure-white;
+      border-radius: 5px;
     }
 
     > input:focus {
@@ -60,6 +72,14 @@
 
     > input.error {
       border: 1px solid $error;
+    }
+
+    .hint {
+      font-size: 13px;
+      color: $deep-blue;
+      font-weight: 700;
+      padding: 0 1em;
+      margin: 0.25em 0 0 0;
     }
   }
 </style>
