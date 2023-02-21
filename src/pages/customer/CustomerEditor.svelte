@@ -1,9 +1,9 @@
 <script lang="ts">
-    import type {ICreateCustomerRequest} from "../lib/model";
-    import InputBox from "../components/InputBox.svelte";
-    import {EInputBox} from "../lib/model.js";
-    import {validateEmail, validatePhone} from "../utils";
-    import {Customers} from "../lib/services";
+    import type {ICreateCustomerRequest} from "../../lib/model";
+    import InputBox from "../../components/InputBox.svelte";
+    import {EInputBox} from "../../lib/model.js";
+    import {validateEmail, validatePhone} from "../../utils";
+    import {Customers} from "../../lib/services";
     import type {AxiosError} from "axios";
 
     let default_customer = {
@@ -100,7 +100,7 @@
 </main>
 
 <style lang="scss">
-  @import "src/assets/constants";
+  @import "../../assets/constants";
 
   .editor-wrapper {
     width: 100%;

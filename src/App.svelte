@@ -6,8 +6,8 @@
     import AdminLayout from "./components/layout/AdminLayout.svelte";
     import Dashboard from "./pages/Dashboard.svelte";
     import Logout from "./pages/Logout.svelte";
-    import CustomerList from "./pages/CustomerList.svelte";
-    import CustomerEditor from "./pages/CustomerEditor.svelte";
+    import CustomerList from "./pages/customer/CustomerList.svelte";
+    import CustomerEditor from "./pages/customer/CustomerEditor.svelte";
 
     user.useLocalStorage();
 </script>
