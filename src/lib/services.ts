@@ -1,5 +1,11 @@
 import axios from "axios";
-import type {ICreateCustomerRequest, ICustomer, IFilterCustomerListRequest, ILoginResponse} from "./model";
+import type {
+    ICreateCustomerRequest,
+    ICustomer,
+    IFilterCustomerListRequest,
+    ILoginResponse,
+    ListResponse
+} from "./model";
 import {user} from "../stores/user";
 
 
@@ -62,7 +68,7 @@ export const Users = {
 }
 
 export const Customers = {
-    get_customers: (keyword: IFilterCustomerListRequest | null = null, page: number | null = null, page_size: number | null = null): Promise<ICustomer[]> => {
+    get_customers: (keyword: IFilterCustomerListRequest | null = null, page: number | null = null, page_size: number | null = null): Promise<ListResponse<ICustomer>> => {
         let k = null;
         if (keyword !== null) {
             k = encode_keyword(JSON.stringify(keyword));

@@ -1,40 +1,30 @@
 <script lang="ts">
-
     import {onMount} from "svelte";
     import InfiniteScroll from "../components/InfiniteScroll.svelte";
     import Loading from "../components/Loading.svelte";
     import {Customers} from "../lib/services";
+    import type {ICustomer, ListResponse} from "../lib/model";
+    import {DataSource} from "../lib/data_source";
 
-    interface Customer {
-        id: number,
-        name: string
-    }
-
-    let page = 0;
-    const page_size = 30;
-    let customers: Customer[] = [];
+    let customers: ICustomer[] = [];
     let loading: boolean = false;
-    let hasMore: boolean = true;
+    let keyword: object = {};
 
-    function delay(ms: number) {
-        return new Promise(resolve => setTimeout(resolve, ms));
-    }
+    const f = async (page: number, page_size: number): Promise<ListResponse<ICustomer>> =>
+        await Customers.get_customers(keyword, page, page_size);
 
-    let i = 0;
-    const fetch_data = async () => {
+
+    let customer_data_source = new DataSource<ICustomer>([], 0, 30, f);
+
+    const fetchData = async () => {
         loading = true;
-        let new_customers = await Customers.get_customers({name: "yee"}, 1, 1);
-        console.log(`${new_customers}`);
+        await customer_data_source.next();
+        customers = [...customer_data_source.data];
         loading = false;
     }
 
-    const reset = () => {
-        page = 0;
-        customers = [];
-    }
-
     onMount(async () => {
-        await fetch_data();
+        await fetchData();
     });
 </script>
 
@@ -48,10 +38,7 @@
             <div>{ customer.name }</div>
         </div>
     {/each}
-    <InfiniteScroll hasMore={hasMore} on:loadMore={() => {
-        ++page;
-        fetch_data();
-    }} threshold={100}/>
+    <InfiniteScroll hasMore={customer_data_source.getHasMore()} on:loadMore={fetchData} threshold={60}/>
 </div>
 
 <style lang="scss">
@@ -60,7 +47,7 @@
     flex-direction: column;
     margin: 0 auto;
     width: 100%;
-    max-height: 80vh;
+    max-height: 10vh;
     overflow-y: scroll;
     position: relative;
     padding: 1rem .75rem;

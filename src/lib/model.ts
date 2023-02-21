@@ -32,3 +32,7 @@ export enum EInputBox {
     text = "text",
     password = "password",
 }
+
+export interface ListResponse<T> {
+    data: T[]
+}
