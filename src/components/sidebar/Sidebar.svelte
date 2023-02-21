@@ -1,6 +1,5 @@
 <script lang="ts">
     import {faBars} from "@fortawesome/free-solid-svg-icons/faBars";
-    import {faClose} from "@fortawesome/free-solid-svg-icons/faClose";
     import {faHome} from "@fortawesome/free-solid-svg-icons/faHome";
     import {faRightFromBracket} from "@fortawesome/free-solid-svg-icons/faRightFromBracket";
     import Fa from "svelte-fa";
@@ -28,19 +27,11 @@
          class:sidenav-collapsed={collapsed}>
         <div class="sidenav-header"
              class:sidenav-collapsed={collapsed}>
-            {#if !collapsed}
-                <div class="menu-icon"
-                     on:click={toggleCollapsed}>
-                    <Fa icon={faBars}
-                        size="1.2x"></Fa>
-                </div>
-            {:else}
-                <div class="menu-icon"
-                     on:click={toggleCollapsed}>
-                    <Fa icon={faClose}
-                        size="1.2x"></Fa>
-                </div>
-            {/if}
+            <div class="menu-icon"
+                 on:click={toggleCollapsed}>
+                <Fa icon={faBars}
+                    size="1.2x"></Fa>
+            </div>
         </div>
         <div class="divider"></div>
         <ul class="sidenav-wrapper">
@@ -88,11 +79,8 @@
     .sidenav-header {
       display: flex;
       flex-direction: row;
-      justify-content: center;
-
-      &.sidenav-collapsed {
-        justify-content: flex-end;
-      }
+      justify-content: start;
+      padding: 0 9px;
 
       .menu-icon {
         display: flex;
