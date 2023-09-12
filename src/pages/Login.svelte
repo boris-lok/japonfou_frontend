@@ -1,80 +1,120 @@
 <script lang="ts">
-    import {useLocation, useNavigate} from "svelte-navigator";
-    import {user} from "../stores/user";
-    import {Users} from "../lib/services";
-    import type {AxiosError} from "axios";
-    import InputBox from "../components/InputBox.svelte";
-    import {EInputBox} from "../lib/model.js";
+  import { useLocation, useNavigate } from "svelte-navigator";
+  import { user } from "../stores/user";
+  import { Users } from "../lib/services";
+  import { isAxiosError } from "axios";
+  import InputBox from "../components/InputBox.svelte";
+  import { EInputBox } from "../lib/model.js";
+  import { finalize, from } from "rxjs";
+  import { startWithTap } from "../lib/utils";
 
-    const navigate = useNavigate();
-    const location = useLocation();
+  const navigate = useNavigate();
+  const location = useLocation();
 
-    let username: string = "";
-    let password: string = "";
-    let error_msg: string | null = null;
+  let username = "";
+  let password = "";
+  let errorMessage: string | null = null;
+  let loading = false;
 
-    const DASHBOARD = "/dashboard"
+  const DASHBOARD = "/dashboard";
 
-    // If user has already logged in, we bring user to dashboard page.
-    $: if ($user) {
-        navigate(DASHBOARD, {replace: true});
+  // If user has already logged in, we bring user to dashboard page.
+  $: if ($user) {
+    navigate(DASHBOARD, { replace: true });
+  }
+
+  function validate() {
+    return username.trim() !== "" && password.trim() !== "";
+  }
+
+  function onUserChanged(e: Event) {
+    const target = e.target as HTMLInputElement;
+    username = target.value.trim();
+  }
+
+  function onPasswordChanged(e: Event) {
+    const target = e.target as HTMLInputElement;
+    password = target.value.trim();
+  }
+
+  function onKeyPress(e: KeyboardEvent) {
+    let key_code = e.code || e.key;
+    if (key_code === "Enter") {
+      loginHandler();
     }
+  }
 
-    const validate = (): boolean => {
-        return username.trim() !== "" && password.trim() !== "";
-    }
+  function loginHandler() {
+    errorMessage = null;
+    if (validate() && !loading) {
+      from(Users.login(username, password))
+        .pipe(
+          startWithTap(() => (loading = true)),
+          finalize(() => (loading = false))
+        )
+        .subscribe({
+          next: (resp) => {
+            user.set(
+              JSON.stringify({
+                username: username,
+                token: resp.token,
+              })
+            );
 
-    const on_username_changed = (e: any) => username = e.target.value;
-
-    const on_password_changed = (e: any) => password = e.target.value;
-
-    const on_key_press = async e => {
-        let key_code = e.code || e.key;
-        if (key_code === "Enter") {
-            await handle_login();
-        }
-    }
-
-    const handle_login = async () => {
-        error_msg = null;
-        try {
-            if (validate()) {
-                let res = await Users.login(username, password);
-                user.set(JSON.stringify({
-                    username: username,
-                    token: res.token
-                }));
-                const from = ($location.state && $location.state.from) || DASHBOARD;
-                navigate(from, {replace: true});
+            const to = ($location.state && $location.state.from) || DASHBOARD;
+            navigate(to, { replace: true });
+          },
+          error: (e) => {
+            if (isAxiosError(e)) {
+              if (e.response && e.response.status === 401) {
+                errorMessage = "Username or password is wrong";
+              } else {
+                errorMessage = "Server unavailable";
+              }
             } else {
-                error_msg = "Please fill the username and password";
+              console.error(e);
+              errorMessage = "unknow error";
             }
-        } catch (e: AxiosError) {
-            if (e.response && e.response.status === 401) {
-                error_msg = "Username or password is wrong"
-            } else {
-                error_msg = "Server unavailable"
-            }
-        }
+          },
+        });
+    } else {
+      errorMessage = "Please fill the username and password";
     }
+  }
 </script>
 
 <div class="login-wrapper">
-    <div class="login-container">
-        <div class="label">Login</div>
-        {#if error_msg !== null}
-            <div class="error">{ error_msg }</div>
-        {/if}
-        <InputBox has_error={error_msg !== null} label="Username" name="username"
-                  on:input={on_username_changed} on:keypress={on_key_press} type={EInputBox.text}/>
-        <InputBox has_error={error_msg !== null} label="Password" name="password" on:input={on_password_changed}
-                  on:keypress={on_key_press} type={EInputBox.password}/>
-        <div class="btn-container">
-            <button on:click={handle_login} type="submit">Login</button>
-        </div>
+  <div class="login-container">
+    <div class="label">Login</div>
+    {#if errorMessage !== null}
+      <div class="error">{errorMessage}</div>
+    {/if}
+    <InputBox
+      has_error={errorMessage !== null}
+      label="Username"
+      name="username"
+      on:input={onUserChanged}
+      on:keypress={onKeyPress}
+      type={EInputBox.text}
+    />
+    <InputBox
+      has_error={errorMessage !== null}
+      label="Password"
+      name="password"
+      on:input={onPasswordChanged}
+      on:keypress={onKeyPress}
+      type={EInputBox.password}
+    />
+    <div class="btn-container">
+      <button
+        class={loading ? "disabled" : ""}
+        on:click={loginHandler}
+        type="submit"
+        disabled={loading}>Login</button
+      >
     </div>
+  </div>
 </div>
-
 
 <style lang="scss">
   @import "src/assets/constants";
@@ -103,9 +143,9 @@
 
     box-shadow: 0 0 24px 0 $grey-shadow;
 
-    border-radius: .5rem;
+    border-radius: 0.5rem;
 
-    padding: 0 .75rem;
+    padding: 0 0.75rem;
 
     > .label {
       font-size: 1.25em;
@@ -113,11 +153,6 @@
       margin: 0.75rem 0;
       width: 100%;
       text-align: center;
-    }
-
-    > form {
-      width: 100%;
-      padding: 1rem 0.75rem;
     }
   }
 
@@ -134,7 +169,11 @@
       cursor: pointer;
       border: 1px solid $black;
       border-radius: 5px;
-      background-color: $light-blue;
+      background-color: $deep-blue;
+    }
+
+    > button.disabled {
+      background-color: $light-grey;
     }
   }
 

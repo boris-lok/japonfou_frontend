@@ -1,34 +1,41 @@
 <script lang="ts">
-    import {EInputBox} from "../lib/model";
+  import { EInputBox } from "../lib/model";
 
-    export let value: string = ""
-    export let has_error: boolean = false;
-    export let name: string = "";
-    export let type: EInputBox = EInputBox.text;
-    export let label: string = "";
+  export let value: string = "";
+  export let has_error: boolean = false;
+  export let name: string = "";
+  export let type: EInputBox = EInputBox.text;
+  export let label: string = "";
 
-    export let hint: string | null = null;
+  export let hint: string | null = null;
 
-    export const reset = () => ref.value = '';
+  export const reset = () => (ref.value = "");
 
-    let ref;
+  let ref: HTMLInputElement;
 
-    const type_action = (node: HTMLInputElement) => {
-        node.type = type;
-    }
+  const type_action = (node: HTMLInputElement) => {
+    node.type = type;
+  };
 </script>
 
-<main>
-    <div class="input-box-container">
-        <input bind:this={ref} class:error={has_error} name={name} on:blur on:input on:keypress placeholder=" "
-               type="text"
-               use:type_action value={value}/>
-        <span>{label}</span>
-        {#if hint !== null}
-            <div class="hint">{hint}</div>
-        {/if}
-    </div>
-</main>
+<div class="input-box-container">
+  <input
+    bind:this={ref}
+    class:error={has_error}
+    {name}
+    on:blur
+    on:input
+    on:keypress
+    placeholder=" "
+    type="text"
+    use:type_action
+    {value}
+  />
+  <span>{label}</span>
+  {#if hint !== null}
+    <div class="hint">{hint}</div>
+  {/if}
+</div>
 
 <style lang="scss">
   @import "src/assets/constants";
@@ -36,7 +43,7 @@
   .input-box-container {
     position: relative;
     width: 100%;
-    margin: 2em 0;
+    margin: 1em 0;
 
     > input {
       width: 100%;
@@ -57,7 +64,8 @@
       transition: 0.3s;
     }
 
-    > input:focus ~ span, input:not(:placeholder-shown) ~ span {
+    > input:focus ~ span,
+    input:not(:placeholder-shown) ~ span {
       color: $deep-blue;
       transform: translateX(10px) translateY(-12px);
       font-size: 0.65em;
